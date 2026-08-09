@@ -2,6 +2,8 @@
 
 用于分享 **prompts** 和 **skills** 的 [pi package](https://pi.dev/docs/latest/packages)，围绕 SDD（Spec-Driven Development）+ TDD（Test-Driven Development）工作流。
 
+由 OpenSpec 和 Superpower 驱动
+
 ## 结构
 
 ```
@@ -29,34 +31,3 @@ pi install /absolute/path/to/sdd-tdd-workflow
 # 临时试用，不写入配置
 pi -e /absolute/path/to/sdd-tdd-workflow
 ```
-
-> 安全提示：pi 包拥有完整系统权限，安装第三方包前请先审查源码。
-
-## 开发
-
-1. 在 `prompts/` 添加 prompt 模板：
-
-   ```markdown
-   ---
-   description: 一句话描述该模板的作用
-   ---
-   模板内容，支持 $1、$@ 等参数占位符。
-   ```
-
-2. 在 `skills/<skill-name>/SKILL.md` 添加技能（frontmatter 必含 `name` 与 `description`）。
-
-3. 本地验证：
-
-   ```bash
-   pi install -l ./path/to/sdd-tdd-workflow   # 写入项目配置
-   pi list                                    # 查看已安装的包
-   ```
-
-## 发布
-
-```bash
-npm publish    # 发布到 npm
-git push       # 或直接通过 git URL 分享
-```
-
-发布后可在 [pi.dev/packages](https://pi.dev/packages) 图库中被检索（依赖 `pi-package` keyword）。
