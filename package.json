@@ -1,0 +1,21 @@
+{
+  "name": "sdd-tdd-workflow",
+  "version": "0.1.0",
+  "description": "Pi package sharing prompt templates and skills for the SDD + TDD workflow",
+  "keywords": [
+    "pi-package"
+  ],
+  "files": [
+    "prompts",
+    "skills",
+    "README.md"
+  ],
+  "pi": {
+    "prompts": [
+      "./prompts"
+    ],
+    "skills": [
+      "./skills"
+    ]
+  }
+}
