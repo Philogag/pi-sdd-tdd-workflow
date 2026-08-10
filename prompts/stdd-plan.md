@@ -48,7 +48,7 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
    base-ref: <先运行 git rev-parse HEAD 记录当前提交>
    ---
 
-   输出完成后更新 **todo tool** 中产出物的进度。
+   输出完成后更新 **todo tool** 中 superpower-plan.md 的进度。
 
 4. **对 superpower-plan.md 进行摘要，并输出为 OpenSpec Tasks**
 
@@ -69,7 +69,7 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
    - 显示简短进度："✓ 已创建 <artifact-id>"
 
    注意需要保持一一对应 superpower-plan.md 中的任务
-   输出完成后更新 **todo tool** 中产出物的进度。
+   输出完成后更新 **todo tool** 中 tasks.md 的进度。
 
 5. **显示最终状态**
 

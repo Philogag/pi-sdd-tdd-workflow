@@ -59,19 +59,21 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
 
    检查是否存在开发分支 `feat/<change-name>`
    如果不存在则遵循 skill `/using-git-worktrees` 进行初始化
+   优先使用git worktree拆分工作区
 
 7. **开始实现任务**
 
-   对于每个待处理任务：
+   对于整个spec tasks
    - 优先使用 skill /subagent-driven-development 推进任务实现
    - 尽可能并行使地实现
-   - 工作区在 feat 分支上开发并提交
+   - 更新 **todo tool** 状态
 
    对于每个待处理任务：
    - 进行所需的代码更改
    - 保持更改最小化且专注
    - 向开发分支 `feat/<change-name>` 进行提交
    - 在主工作区 tasks.md 中标记任务完成：`- [ ]` → `- [x]`
+   - 更新 **todo tool** 状态
    - 继续下一个任务
 
    **暂停如果：**
@@ -79,6 +81,8 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
    - 实现揭示了设计问题 → 建议更新产出物
    - 遇到错误或阻碍 → 报告并等待指导
    - 用户中断
+
+8. **清理 todo tool**
 
 **完成时的输出**
 

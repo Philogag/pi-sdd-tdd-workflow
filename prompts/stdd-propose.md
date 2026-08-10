@@ -39,13 +39,12 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
 
 3. **获取产出物构建顺序**
 
-   按照如下顺序出产物
+   按照如下顺序输出产物, 并使用 **todo tool** 追踪
    - proposal.md（什么和为什么）
    - design.md（如何实现）
    - superpower-design.md (更细致的design)
-   - superpower-plan.md (详细的实现过程) **推迟，不在本阶段**
-   - tasks.md (实现状态跟踪) **推迟，不在本阶段**
-   并使用 **todo tool** 跟踪产出物的进度。
+   - superpower-plan.md (详细的实现过程) **仅在todo tool中展示，不在本阶段输出**
+   - tasks.md (实现状态跟踪) **仅在todo tool中展示，不在本阶段输出**
 
 4. **按顺序创建基础Spec**
 
@@ -67,6 +66,7 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
       - 使用 `template` 作为结构创建产出物文件
       - 应用 `context` 和 `rules` 作为约束 - 但不要将它们复制到文件中
       - 显示简短进度："✓ 已创建 <artifact-id>"
+      - 更新 **todo tools状态**
 
    b. **继续直到所有 `applyRequires` 产出物完成**
       - 创建每个产出物后，重新运行 `openspec status --change "<change-name>" --json`

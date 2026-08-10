@@ -63,10 +63,20 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
    ```
 
 5. **压缩开发分支，并提交到主工作区**
-   
+
    将全部修改点压缩为一个 commit 进行提交到主工作区
    - 开发分支 `feat/<change-name>` 中的所有修改
    - 当前 change 的归档目录
+
+   代码格式化
+   - 应当对提交的代码进行格式化
+   - 遵循仓库已有格式化配置
+
+   对于 commit message 格式，按以下顺序选择
+   - 当前工作区submodule的 .gitmessage
+   - 当前工作区submodule的 5 条历史提交格式总结
+   - 根仓库的 .gitmessage
+   - 根仓库的 5 条历史提交格式总结
 
 **成功时的输出**
 
