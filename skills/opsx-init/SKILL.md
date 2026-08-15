@@ -41,22 +41,50 @@ description: >-
 
 2. **判定未安装**（`command -v openspec openspec-cn` 均无输出）→ **引导用户安装**：
 
-   用 `ask_user_question` 确认安装方式（不要擅自全局安装），提供选项：
+   用 `ask_user_question` 确认版本（不要擅自安装），提供选项：
 
-   - **简体中文版（推荐）**：`npm install -g @studyzy/openspec-cn`
-     （本技能包所有命令均兼容，输出为中文）
-   - **英文原版**：`npm install -g openspec-cli`
+   - **简体中文版（推荐）**：`@studyzy/openspec-cn`（本技能包所有命令均兼容，输出为中文）
+   - **英文原版**：`openspec-cli`
    - **用户自行安装**：等待用户装好后再继续
 
-   用户确认后执行安装，然后**重新验证**：
+   **自动智能处理权限**（用户可能没有 `npm install -g` 的写权限）：先探测全局
+   prefix 是否可写；不可写或安装失败时，**自动回退**装到 `~/.local`（无需再问）：
+
+   ```bash
+   PKG=@studyzy/openspec-cn   # 英文版换 openspec-cli
+
+   # ① 探测：npm 全局目录可写 → 正常全局安装；否则装到 ~/.local
+   if test -w "$(npm prefix -g)"; then
+     npm install -g "$PKG" || npm install -g --prefix "$HOME/.local" "$PKG"
+   else
+     npm install -g --prefix "$HOME/.local" "$PKG"
+   fi
+
+   # ② ~/.local 方案补充：@studyzy/openspec-cn 只提供 openspec-cn 一个 bin，
+   #    补个 openspec 符号链接（本技能命令统一用 openspec）
+   ln -sf "$HOME/.local/bin/openspec-cn" "$HOME/.local/bin/openspec" 2>/dev/null || true
+
+   # ③ PATH 处理：~/.local/bin 不在 PATH 则加（当前会话 + 写入 shell rc 永久生效）
+   if ! echo "$PATH" | tr ':' '\n' | grep -qx "$HOME/.local/bin"; then
+     export PATH="$HOME/.local/bin:$PATH"   # 当前会话立即生效
+     case "$(basename "$SHELL")" in
+       bash) echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc ;;
+       zsh)  echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.zshrc ;;
+       *)    echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.profile ;;  # 其他 shell，重启终端生效
+     esac
+   fi
+   ```
+
+   然后**重新验证**：
 
    ```bash
    openspec --version   # 必须能输出版本号才继续
    openspec -h | head -20   # 能看到命令列表（new/init/status/…）
    ```
 
-   - 若安装后仍报 command not found：提示用户检查 npm 全局 bin 目录是否在 PATH
-     （`npm prefix -g` 查看），必要时新开终端会话再试。
+   - 两个位置都装失败（如网络问题）：提示用户检查网络/代理后再试，不要继续后续步骤。
+   - 安装后仍报 command not found：检查 `~/.local/bin` 是否在 PATH（上面 ③ 已处理），
+     或新开终端会话再试。
 
 3. **检查是否已初始化**：
 
@@ -175,6 +203,8 @@ rm -rf openspec/changes/smoke-check
 
 | 现象 | 说明 |
 |---|---|
+| `npm install -g` 报 EACCES/EPERM（无写权限） | 自动回退：`npm install -g --prefix "$HOME/.local"`，装到 `~/.local/bin` 并处理 PATH，无需手动干预 |
+| `~/.local` 方案装完只有 `openspec-cn`、没有 `openspec` | 正常：该包只提供 `openspec-cn` 一个 bin；按 Step 0 ② 补符号链接 |
 | `已跳过命令：agents（无适配器）` | 正常。agents 工具无 AGENTS.md 生成适配器，skills 照常安装 |
 | `openspec new change` 显示 `（schema 'spec-driven'）` 但实际用了新 schema | CLI 显示瑕疵；以 `Schema：<name>` 行为准 |
 | `.agents/skills` 与 `~/.pi/agent/skills` 都有 openspec 技能 | 正常共存；`.agents/` 是项目级，全局的是用户级 |
