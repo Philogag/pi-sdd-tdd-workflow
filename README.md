@@ -16,6 +16,14 @@ sdd-tdd-workflow/
 - `prompts/`：每个 `.md` 文件是一个 prompt 模板，文件名（不含 `.md`）即命令名，编辑器里输入 `/name` 展开。
 - `skills/`：每个技能是一个包含 `SKILL.md` 的目录，按需加载。
 
+## 技能包
+
+- `opsx-use-superpower-cn-schema/`：**简体中文版** OpenSpec schema `superpowers-bridge-cn`，
+  由 [superpowers-bridge](https://github.com/JiangWay/openspec-schemas/tree/main/superpowers-bridge) 整理而来，
+  并融合本仓库 `prompts/stdd-*.md` 的 SDD 工作流细节。安装：把该目录复制到项目
+  `openspec/schemas/superpowers-bridge-cn/` 后运行 `openspec schema validate superpowers-bridge-cn`。
+  详见该技能内 `README.md`。
+
 ## 安装
 
 ```bash
