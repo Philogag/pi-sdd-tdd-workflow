@@ -18,6 +18,9 @@ sdd-tdd-workflow/
 
 ## 技能包
 
+- `opsx-init/`：在当前仓库初始化 OpenSpec 工作流。默认运行 `openspec init --tools agents`
+  （6 个 openspec skills 装进 `.agents/skills/`），可选接入 `superpowers-bridge-cn`
+  schema 并设为默认；含幂等处理与端到端验证。
 - `opsx-use-superpower-cn-schema/`：**简体中文版** OpenSpec schema `superpowers-bridge-cn`，
   由 [superpowers-bridge](https://github.com/JiangWay/openspec-schemas/tree/main/superpowers-bridge) 整理而来，
   并融合本仓库 `prompts/stdd-*.md` 的 SDD 工作流细节。安装：把该目录复制到项目
