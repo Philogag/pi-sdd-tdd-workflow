@@ -38,61 +38,61 @@ DAG 依赖由 CLI 强制（`openspec instructions` 会拦截缺依赖的产出�
 
 ### 完整过程示范（以 `add-user-auth` 为例）
 
-**① 初始化仓库**（用 `opsx-init` 技能，或手动）：
+以「用户输入 → 技能调用 → 产出物」的形式描述一个完整 cycle。
 
-```bash
-openspec init --tools agents                # 默认：6 个 openspec skills 装进 .agents/skills/
-# 可选：接入本包的中文 schema 并设为默认
-mkdir -p openspec/schemas/superpowers-bridge-cn
-cp -r skills/opsx-use-superpower-cn-schema/{schema.yaml,templates,VERSION} \
-      openspec/schemas/superpowers-bridge-cn/
-sed -i 's/^schema: spec-driven/schema: superpowers-bridge-cn/' openspec/config.yaml
-openspec schema validate superpowers-bridge-cn
-```
+#### ① 初始化仓库（一次性）
 
-**② 建变更并推进产出物**（每步先看指令再写文件）：
+- **用户输入**：`/opsx-init`（或「帮我把这个仓库初始化成 openspec 工作流」）
+- **技能调用**：agent 加载 `opsx-init` → 先确认 openspec CLI 可用（缺失则引导安装，无权限自动回退
+  `~/.local/bin`）→ 运行 `openspec init --tools agents` → 询问是否接入中文 schema，确认后复制
+  `superpowers-bridge-cn` 到 `openspec/schemas/` 并设为默认 → `openspec schema validate` 验证
+- **产出**：`openspec/`（config.yaml）、`.agents/skills/`（6 个 openspec 技能）
 
-```bash
-openspec new change add-user-auth            # 已设默认 schema 则无需 --schema
-openspec status --change add-user-auth --json    # 查看 DAG 状态
+#### ② 提议变更（brainstorm + proposal）
 
-# 按依赖顺序逐个生成并填写产出物：
-openspec instructions --change add-user-auth brainstorm      # → brainstorm.md（对话收敛）
-openspec instructions --change add-user-auth proposal       # → proposal.md（什么和为什么）
-openspec instructions --change add-user-auth specs          # → specs/<capability>/spec.md（delta 规格）
-openspec instructions --change add-user-auth design         # → design.md（技术设计，与 specs 并行）
-openspec instructions --change add-user-auth tasks          # → tasks.md（任务清单）
-openspec instructions --change add-user-auth plan           # → plan.md（微步实施计划）
-```
+- **用户输入**：`/opsx:propose` 或「我想给系统加用户认证，支持邮箱+密码登录」
+- **技能调用**：agent 加载 `opsx-use-superpower-cn-schema` 获取流程导航 → 运行
+  `openspec new change add-user-auth` → 生成 `brainstorm` 指令 → 加载 `superpowers:brainstorming`
+  （PRECHECK 校验技能可用）→ 用 `ask_user_question` 逐个澄清需求 → 给出 2-3 个备选方案与取舍
+  → 收敛后写 `brainstorm.md` → 继续生成 `proposal` 指令 → 写 `proposal.md`
+- **产出**：`openspec/changes/add-user-auth/{brainstorm.md, proposal.md}`
 
-**③ 实现**（apply 走查，SDD + Superpowers 技能集成）：
+#### ③ 设计与规格（并行）
 
-```bash
-openspec instructions --change add-user-auth apply
-```
+- **技能调用**：agent 生成 `design` 指令 → 把 brainstorm 重组为结构化设计
+  （Context / Goals / Non-Goals / Decisions / Risks / Migration）→ 写 `design.md`；
+  同时生成 `specs` 指令 → 写 `specs/auth/spec.md`（delta 规格：ADDED/MODIFIED/REMOVED）
+- **产出**：`design.md`、`specs/auth/spec.md`（Requirement 须含 SHALL/MUST，Scenario 须 4 井号）
 
-apply 流程：pre-flight 技能检查 → `using-git-worktrees` 建 `feat/add-user-auth` 隔离分支 →
-`subagent-driven-development` 按 plan 微步实现（传递激活 TDD 与 code-review）→ 提交。
+#### ④ 计划（tasks + plan）
 
-**④ 验证**：
+- **技能调用**：agent 生成 `tasks` 指令 → 写 `tasks.md`（任务清单）→ 生成 `plan` 指令 →
+  写 `plan.md`（微步实施计划，含 change/design-doc/base-ref 文件头，供 subagent 执行）
+- **产出**：`tasks.md`、`plan.md`
 
-```bash
-openspec instructions --change add-user-auth verify
-openspec validate --all --json    # 结构校验（Requirement 须含 SHALL/MUST、Scenario 须 4 井号等）
-```
+#### ⑤ 实现（apply）
 
-verify 产出 `verify.md`：7 项检查（结构校验 / tasks 完成度 / delta spec 同步 /
-design-specs 一致性 / 实现信号 / front-door 路由泄漏 / deferred dogfood 等价性）+
-Overall Decision（PASS / PASS WITH WARNINGS / FAIL）。
+- **用户输入**：`/opsx:apply` 或「开始实现」
+- **技能调用**：agent 生成 `apply` 指令 → pre-flight 检查必需技能 → 加载
+  `superpowers:using-git-worktrees` 建 `feat/add-user-auth` 隔离分支 → 加载
+  `superpowers:subagent-driven-development` 按 plan 微步派发子代理（传递激活
+  `test-driven-development` 与 `requesting-code-review`）→ 提交
+- **产出**：`feat/add-user-auth` 分支上的实现提交
 
-**⑤ 回顾 + 归档**：
+#### ⑥ 验证
 
-```bash
-openspec instructions --change add-user-auth retrospective   # evidence-first，PR 之前写
-openspec archive -y                                          # 归档到 openspec/specs/
-```
+- **技能调用**：agent 生成 `verify` 指令 → 运行 `openspec validate --all --json` 结构校验 →
+  逐项完成 7 项检查（结构校验 / tasks 完成度 / delta spec 同步 / design-specs 一致性 /
+  实现信号 / front-door 路由泄漏 / deferred dogfood 等价性）→ 填 Overall Decision
+- **产出**：`verify.md`（PASS / PASS WITH WARNINGS / FAIL）
 
-归档后收尾（finishing-a-development-branch）：开 PR、合入 main。
+#### ⑦ 回顾 + 归档
+
+- **技能调用**：agent 生成 `retrospective` 指令 → evidence-first 写 `retrospective.md`
+  （§0 Evidence + Wins/Misses + 技能合规 + promote candidates，PR 之前完成）→
+  运行 `openspec archive -y` 归档到 `openspec/specs/` → 加载
+  `superpowers:finishing-a-development-branch` 开 PR、合入 main
+- **产出**：归档后的 specs、合入的 PR
 
 ### 各阶段用到的技能
 
