@@ -6,45 +6,43 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
 
 提案新变更 - 一步创建变更并生成所有产出物。
 
-我将创建一个包含以下产出物的变更：
-- proposal.md（什么和为什么）
-- design.md（如何实现）
-- superpower-design.md (更细致的design)
-- superpower-plan.md (详细的实现过程)
-- tasks.md (实现状态跟踪)
-
-准备好需求后，运行 /stdd-plan 开始生成计划
+准备好需求后，运行 /stdd-apply 开始执行变更
 
 ---
 
-**输入**：$@
+**输入**：用户输入部分的内容是变更名称（kebab-case），或用户想要构建内容的描述。
 
 **步骤**
 
+0. **准备步骤**
+   确认 openspec 工具或 openspec-cn 工具已全局安装
+   > openspec-cn 为 openspec 的完全等价替代
+
 1. **如果没有提供输入，询问他们想要构建什么**
 
-   使用 **ask_user_question tool**（开放式，无预设选项）询问：
+   使用 **tool://ask** 或类似工具 进行澄清（开放式问题无预设选项时，直接在对话中询问）：
    > "您想要处理什么变更？请描述您想要构建或修复的内容。"
 
    根据他们的描述，推导出一个 kebab-case 名称（例如："add user authentication" → `add-user-auth`），作为 <change-name>。
 
    **重要提示**：在不了解用户想要构建什么的情况下，请勿继续。
-   **在充分了解项目当前状态前，使用 skill /openspec-explore 探索**
+   **在充分了解项目当前状态前，使用 **skill://openspec-explore** 和 **skill://brainstorming** 探索**
 
 2. **创建变更目录**
    ```bash
    openspec new change "<change-name>"
    ```
    这将在 `openspec/changes/<change-name>/` 创建一个带有 `.openspec.yaml` 的脚手架变更。
+   如果在工作区路径到实际工作模块路径存在多层子 openspec 工作目录，使用 **tool://ask** 提示用户选择合适的 openspec 工作目录。
 
 3. **获取产出物构建顺序**
-
-   按照如下顺序输出产物, 并使用 **todo tool** 追踪
-   - proposal.md（什么和为什么）
-   - design.md（如何实现）
-   - superpower-design.md (更细致的design)
-   - superpower-plan.md (详细的实现过程) **仅在todo tool中展示，不在本阶段输出**
-   - tasks.md (实现状态跟踪) **仅在todo tool中展示，不在本阶段输出**
+   ```bash
+   openspec status --change "<name>" --json
+   ```
+   解析 JSON 以获取：
+   - `applyRequires`: 实现前所需的产出物 ID 数组（例如：`["tasks"]`）
+   - `artifacts`: 所有产出物及其状态和依赖项的列表
+   如果存在 **tool://todo** 或类似工具，则进行进度跟踪
 
 4. **按顺序创建基础Spec**
 
@@ -66,7 +64,7 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
       - 使用 `template` 作为结构创建产出物文件
       - 应用 `context` 和 `rules` 作为约束 - 但不要将它们复制到文件中
       - 显示简短进度："✓ 已创建 <artifact-id>"
-      - 更新 **todo tools状态**
+      - 使用 **tool://todo** 更新状态
 
    b. **继续直到所有 `applyRequires` 产出物完成**
       - 创建每个产出物后，重新运行 `openspec status --change "<change-name>" --json`
@@ -74,30 +72,10 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
       - 当所有 `applyRequires` 产出物完成时停止
 
    c. **如果产出物需要用户输入**（上下文不清楚）：
-      - 使用 **ask_user_question tool** 进行澄清
+      - 使用 **tool://ask** 进行澄清
       - 然后继续创建
 
-5. **使用 skill /brainstorming 细化需求**
-
-   使用 /brainstorming 技能头脑风暴，深度技术设计，并传入以下上下文：
-
-   ---
-   Change: <change-name>
-   上游需求（来自 OpenSpec，不要重写）：
-   - 目标：<从 proposal.md 提取>
-   - 架构约束：<从 design.md 提取>
-
-   约束：
-   1. 输出文件为 openspec/changes/<change-name>/superpower-design.md
-   2. OpenSpec 是需求的事实源，不要重新定义需求，不要重写 proposal/spec
-   3. 你的任务是基于已有需求做深度技术设计：实现方案、技术风险、测试策略、边界条件
-   4. 如发现 delta spec 缺少验收场景，只能回写 OpenSpec delta spec，不要在 Design Doc 中创建第二份需求 spec
-   5. 跳过上下文探索，直接进入设计提问
-   6. 在 brainstorming 途中任何与用户的交互均使用 **ask_user_question tool** 
-   ---
-
-6. **显示最终状态**
-
+5. **显示最终状态**
    ```bash
    openspec status --change "<change-name>"
    ```
@@ -107,8 +85,8 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
 完成所有产出物后，总结：
 - 变更名称和位置
 - 已创建产出物的列表及简要描述
-- 准备就绪："任务目标和当前状态已经明朗，可以开始输出实现步骤拆解。"
-- 提示："运行 `/stdd-plan` 开始输出实现步骤拆解。"
+- 准备就绪："提案已就绪！准备好实现。"
+- 提示："运行 `/stdd-apply` 开始输出实现提案。"
 
 **产出物创建指南**
 
@@ -127,3 +105,8 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
 - 如果上下文极其不清楚，询问用户 - 但倾向于做出合理的决定以保持势头
 - 如果同名变更已存在，询问用户是否要继续它或创建一个新的
 - 在继续下一个之前，验证写入后每个产出物文件是否存在
+
+---
+
+**用户输入**
+$@

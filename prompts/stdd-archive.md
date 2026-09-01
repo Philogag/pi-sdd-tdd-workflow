@@ -1,12 +1,12 @@
 ---
-description: 收尾 OpenSpec 变更
+description: 收尾提案变更
 argument-hint: "<spec name>"
 compatibility: 需要 openspec CLI 和 superpower 技能包。
 ---
 
 归档实验性工作流中已完成的变更，合并开发分支中的代码并提交到主工作区。
 
-**change-name**：${@:-缺省}
+**change-name**：$@（未提供时按步骤 1 推断）
 
 **步骤**
 
@@ -15,7 +15,7 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
    如果提供了名称，使用它。否则：
    - 如果用户提到了某个变更，从对话上下文中推断
    - 如果只存在一个活动变更，自动选择
-   - 如果不明确，运行 `openspec list --json` 获取可用变更，并使用 **ask_user_question tool** 让用户选择
+   - 如果不明确，运行 `openspec list --json` 获取可用变更，并使用 **ask** tool 让用户选择
 
    始终宣布："正在使用变更：<change-name>"以及如何覆盖（例如，`/stdd-archive <other>`）。
 
@@ -115,7 +115,5 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
 - 不要在警告时阻止归档 - 只需告知并确认
 - 移动到归档时保留 .openspec.yaml（它与目录一起移动）
 - 显示清晰的操作摘要
-- 如果请求同步，使用 Skill tool 调用 `openspec-sync-specs`（代理驱动）
+- 如果请求同步，读取 `skill://openspec-sync-specs`（若已安装）并按其中流程执行（代理驱动）
 - 如果存在增量规格说明，请始终运行同步评估，并在提示前显示综合摘要
-
-
