@@ -65,7 +65,12 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
    - 剩余任务概览
    - 来自 CLI 的动态指令
 
-6. **开始实现任务**
+6. **工作区**：调用 `skill://using-git-worktrees` 为本变更创建隔离的工作区。
+   优先使用 git worktree 拆分工作区 `feat/<change-name>`；
+   检查开发分支 `feat/<change-name>` 是否存在，不存在则初始化。
+   如果工作区过大或存在路径强相关依赖，则不派生 worktree, 直接在主工作区使用开发分支进行工作
+
+7. **开始实现任务**
 
    对于整个spec tasks
    - 优先使用 `skill://subagent-driven-development` 推进任务实现（若已安装）
@@ -76,7 +81,8 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
    - 进行所需的代码更改
    - 保持更改最小化且专注
    - 向开发分支 `feat/<change-name>` 进行提交
-   - 在主工作区 tasks.md 中标记任务完成：`- [ ]` → `- [x]`, 但不在主线提交
+   - 每完成一个 task 后，在 tasks.md 中标记任务完成：`- [ ]` → `- [x]`
+   - 如果在 worktree 中开发，同时更新 worktree 和 主工作区中的 task.md
    - 更新 **tool://todo** 状态
    - 继续下一个任务
 
@@ -86,7 +92,7 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
    - 遇到错误或阻碍 → 报告并等待指导
    - 用户中断
 
-7. **完成或暂停时，显示状态**
+8. **完成或暂停时，显示状态**
 
    显示：
    - 本次会话完成的任务

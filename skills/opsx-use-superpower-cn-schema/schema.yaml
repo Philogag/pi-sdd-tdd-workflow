@@ -239,7 +239,17 @@ apply:
        如果工作区过大或存在路径强相关依赖，则不派生 worktree, 
        直接在主工作区使用开发分支进行工作
 
-    2. **执行器**：
+    2. **主Agent工作流**：
+       对于 tasks 中每个待处理任务：
+       - 派发 **执行器** 进行所需的代码更改
+       - 保持更改最小化且专注
+       - 向开发分支 `feat/<change-name>` 提交任务代码
+       - 每完成一个 task 后，在 tasks.md 中标记任务完成：`- [ ]` → `- [x]`
+       - 如果在 worktree 中开发，同时更新 worktree 和 主工作区中的 task.md
+       - 更新 **tool://todo** 状态
+       - 继续下一个任务
+
+    3. **执行器**：
 
        调用 **skill://subagent-driven-development**，为
        plan.md 的微任务逐个派发 fresh subagent。
@@ -268,6 +278,6 @@ apply:
        - 遇到错误或阻碍 → 报告并等待指导
        - 用户中断
 
-    3. **验证**：所有任务完成后，调用 **skill://openspec-verify-change**
+    4. **验证**：所有任务完成后，调用 **skill://openspec-verify-change**
        产出 `verify` 产出物，检查完整性、正确性与一致性。
        反复运行 verify 直到所有阻塞问题解决。

@@ -73,8 +73,8 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
    - 遵循仓库已有格式化配置
 
    对于 commit message 格式，按以下顺序选择
-   - 当前工作区submodule的 .gitmessage
-   - 当前工作区submodule的 5 条历史提交格式总结
+   - 当前工作区 submodule 的 .gitmessage
+   - 当前工作区 submodule 的 5 条历史提交格式总结
    - 根仓库的 .gitmessage
    - 根仓库的 5 条历史提交格式总结
 
