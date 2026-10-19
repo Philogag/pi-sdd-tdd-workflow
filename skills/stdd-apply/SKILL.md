@@ -1,12 +1,25 @@
 ---
-description: 实现提案功能
-argument-hint: "<spec name>"
-compatibility: 需要 openspec CLI 和 superpower 技能包。
+name: stdd-apply
+description: >-
+  实现 OpenSpec 变更中的任务：读取 apply 指令与上下文文件，在隔离工作区按 tasks 推进
+  实现并逐个提交。当用户想开始实现、继续实现某个 change、或说“开始写代码/执行任务”时使用。
+  需要 openspec CLI 与 superpowers 技能包。
 ---
+
+# stdd-apply — 实现提案功能
 
 实现 OpenSpec 变更中的任务。
 
-**输入**：可选择指定变更名称（例如，`/stdd-apply add-auth`）。如果省略，检查是否可以从对话上下文中推断出来。如果模糊或不明确，你必须提示可用的变更。
+## 何时使用
+
+- 用户想开始或继续实现某个 OpenSpec change
+- `/skill:stdd-propose` 生成的产出物已满足 schema 的 `apply.requires`
+
+## 输入
+
+`/skill:stdd-apply <change-name>` 的参数（omp 以 `User: <args>` 注入），可选择指定变更名称
+（例如，`/skill:stdd-apply add-auth`）。如果省略，检查是否可以从对话上下文中推断出来。
+如果模糊或不明确，你必须提示可用的变更。
 
 **步骤**
 
@@ -19,9 +32,9 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
    如果提供了名称，使用它。否则：
    - 如果用户提到了某个变更，从对话上下文中推断
    - 如果只存在一个活动变更，自动选择
-   - 如果不明确，运行 `openspec list --json` 获取可用变更，并使用**tool://ask** 让用户选择
+   - 如果不明确，运行 `openspec list --json` 获取可用变更，并使用 `ask` 工具让用户选择
 
-   始终宣布："正在使用变更：<change-name>"以及如何覆盖（例如，`/stdd-apply <other>`）。
+   始终宣布："正在使用变更：<change-name>"以及如何覆盖（例如，`/skill:stdd-apply <other>`）。
 
 2. **检查状态以了解 Schema**
    ```bash
@@ -44,7 +57,7 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
    - 基于当前状态的动态指令
 
    **处理状态：**
-   - 如果 `state: "blocked"`（缺少产出物）：显示消息，建议运行 `/stdd-plan` 补齐缺失产出物
+   - 如果 `state: "blocked"`（缺少产出物）：显示消息，建议运行 `/skill:stdd-propose` 补齐缺失产出物
    - 如果 `state: "all_done"`：祝贺，建议归档
    - 否则：继续实现
 
@@ -57,8 +70,8 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
 
 5. **显示当前进度**
 
-   使用 **tool://todo** 实时向用户反馈 tasks 进度
-   如果不存在**tool://todo**，则忽略后续所有**tool://todo**状态更新
+   使用 `todo` 工具实时向用户反馈 tasks 进度
+   如果不存在 `todo` 工具，则忽略后续所有 `todo` 工具状态更新
    显示：
    - 正在使用的 Schema
    - 进度："N/M 任务已完成"
@@ -75,7 +88,7 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
    对于整个spec tasks
    - 优先使用 `skill://subagent-driven-development` 推进任务实现（若已安装）
    - 尽可能并行使地实现
-   - 更新 **tool://todo** 状态
+   - 更新 `todo` 工具 状态
 
    对于每个待处理任务：
    - 进行所需的代码更改
@@ -83,7 +96,7 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
    - 向开发分支 `feat/<change-name>` 进行提交
    - 每完成一个 task 后，在 tasks.md 中标记任务完成：`- [ ]` → `- [x]`
    - 如果在 worktree 中开发，同时更新 worktree 和 主工作区中的 task.md
-   - 更新 **tool://todo** 状态
+   - 更新 `todo` 工具 状态
    - 继续下一个任务
 
    **暂停如果：**
@@ -114,7 +127,7 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
 - [x] 任务 2
 ...
 
-所有任务已完成！您可以使用 `/stdd-archive` 收尾此变更。
+所有任务已完成！您可以使用 `/skill:stdd-archive` 收尾此变更。
 ```
 
 **护栏**
@@ -138,4 +151,5 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
 ---
 
 **用户输入**
-$@
+
+技能调用参数（omp 以 `User: <args>` 注入）即上述输入；为空时按步骤 1 推断或询问。

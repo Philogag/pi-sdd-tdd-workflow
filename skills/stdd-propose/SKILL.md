@@ -1,16 +1,24 @@
 ---
-description: 提案新变更 - 输出提案和设计
-argument-hint: "<提案概述>"
-compatibility: 需要 openspec CLI 和 superpower 技能包。
+name: stdd-propose
+description: >-
+  提案新变更：创建 OpenSpec change 并生成实现所需的全部产出物（brainstorm、proposal、
+  design、specs、tasks、plan，按 schema 的 apply.requires 而定）。当用户想发起新变更、
+  写提案、把想法落成变更规划时使用。需要 openspec CLI 与 superpowers 技能包。
 ---
 
-提案新变更 - 一步创建变更并生成所有产出物。
+# stdd-propose — 提案新变更
 
-准备好需求后，运行 /stdd-apply 开始执行变更
+一步创建变更并生成所有产出物。准备好需求后，使用 `/skill:stdd-apply` 开始执行变更。
 
----
+## 何时使用
 
-**输入**：用户输入部分的内容是变更名称（kebab-case），或用户想要构建内容的描述。
+- 用户想发起新变更、写提案、开始规划一个功能或修复
+- 用户描述了想构建的内容，但 `openspec/changes/` 下还没有对应变更
+
+## 输入
+
+`/skill:stdd-propose <提案概述>` 的参数（omp 以 `User: <args>` 传入），或用户本轮消息
+中的描述，作为变更名称（kebab-case）或用户想要构建内容的描述。
 
 **步骤**
 
@@ -20,7 +28,7 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
 
 1. **如果没有提供输入，询问他们想要构建什么**
 
-   使用 **tool://ask** 或类似工具 进行澄清（开放式问题无预设选项时，直接在对话中询问）：
+   使用 `ask` 工具（无此工具时直接在对话中询问）进行澄清：
    > "您想要处理什么变更？请描述您想要构建或修复的内容。"
 
    根据他们的描述，推导出一个 kebab-case 名称（例如："add user authentication" → `add-user-auth`），作为 <change-name>。
@@ -33,7 +41,7 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
    openspec new change "<change-name>"
    ```
    这将在 `openspec/changes/<change-name>/` 创建一个带有 `.openspec.yaml` 的脚手架变更。
-   如果在工作区路径到实际工作模块路径存在多层子 openspec 工作目录，使用 **tool://ask** 提示用户选择合适的 openspec 工作目录。
+   如果在工作区路径到实际工作模块路径存在多层子 openspec 工作目录，使用 `ask` 工具 提示用户选择合适的 openspec 工作目录。
 
 3. **获取产出物构建顺序**
    ```bash
@@ -42,7 +50,7 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
    解析 JSON 以获取：
    - `applyRequires`: 实现前所需的产出物 ID 数组（例如：`["tasks"]`）
    - `artifacts`: 所有产出物及其状态和依赖项的列表
-   如果存在 **tool://todo** 或类似工具，则进行进度跟踪
+   如果存在 `todo` 工具，则进行进度跟踪
 
 4. **按顺序创建基础Spec**
 
@@ -64,7 +72,7 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
       - 使用 `template` 作为结构创建产出物文件
       - 应用 `context` 和 `rules` 作为约束 - 但不要将它们复制到文件中
       - 显示简短进度："✓ 已创建 <artifact-id>"
-      - 使用 **tool://todo** 更新状态
+      - 使用 `todo` 工具 更新状态
 
    b. **继续直到所有 `applyRequires` 产出物完成**
       - 创建每个产出物后，重新运行 `openspec status --change "<change-name>" --json`
@@ -72,7 +80,7 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
       - 当所有 `applyRequires` 产出物完成时停止
 
    c. **如果产出物需要用户输入**（上下文不清楚）：
-      - 使用 **tool://ask** 进行澄清
+      - 使用 `ask` 工具 进行澄清
       - 然后继续创建
 
 5. **显示最终状态**
@@ -86,7 +94,7 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
 - 变更名称和位置
 - 已创建产出物的列表及简要描述
 - 准备就绪："提案已就绪！准备好实现。"
-- 提示："运行 `/stdd-apply` 开始输出实现提案。"
+- 提示："运行 `/skill:stdd-apply` 开始实现。"
 
 **产出物创建指南**
 
@@ -109,4 +117,5 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
 ---
 
 **用户输入**
-$@
+
+技能调用参数（omp 以 `User: <args>` 注入）即上述输入；为空时按步骤 1 询问。

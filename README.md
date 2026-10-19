@@ -1,26 +1,28 @@
 # sdd-tdd-workflow
 
-用于分享 **prompts** 和 **skills** 的 [pi package](https://pi.dev/docs/latest/packages)，围绕 SDD（Spec-Driven Development）+ TDD（Test-Driven Development）工作流。
+用于分享 **skills** 的 [pi package](https://pi.dev/docs/latest/packages)，围绕 SDD（Spec-Driven Development）+ TDD（Test-Driven Development）工作流，同时兼容 omp（通过 `skills/<name>/SKILL.md` 发现）。
 
 由 OpenSpec 和 Superpowers 驱动。
 
 > **推荐路径**：使用下方「openspec schema 工作流」（`superpowers-bridge-cn`，简体中文），
 > 由技能（`opsx-init` / `opsx-use-superpower-cn-schema`）+ OpenSpec CLI 驱动。
-> 原有的 `prompts/stdd-*.md` 工作流**即将弃用**（见文末）。
+> 原有的 stdd prompt 工作流已转为技能（`skills/stdd-*`），**即将弃用**（见文末）。
 
 ## 结构
 
 ```
 sdd-tdd-workflow/
-├── package.json    # pi 清单：声明 prompts 与 skills 目录
-├── prompts/        # ⚠️ 即将弃用：stdd-*.md prompt 模板（见文末）
+├── package.json    # pi 清单：声明 skills 目录
 └── skills/         # 技能（每个技能是一个含 SKILL.md 的目录，按需加载）
     ├── opsx-init/                        # 初始化 OpenSpec 工作流
-    └── opsx-use-superpower-cn-schema/    # 简体中文 openspec schema 技能包
+    ├── opsx-use-superpower-cn-schema/    # 简体中文 openspec schema 技能包
+    ├── stdd-propose/                     # ⚠️ 即将弃用：提案新变更
+    ├── stdd-apply/                       # ⚠️ 即将弃用：实现提案功能
+    └── stdd-archive/                     # ⚠️ 即将弃用：收尾提案变更
 ```
 
-- `prompts/`：每个 `.md` 文件是一个 prompt 模板，文件名（不含 `.md`）即命令名，编辑器里输入 `/name` 展开。
-- `skills/`：每个技能是一个包含 `SKILL.md` 的目录，按需加载。
+- `skills/`：每个技能是一个包含 `SKILL.md` 的目录，按需加载；omp 与 pi 均按
+  `skills/<name>/SKILL.md` 发现，交互式调用用 `/skill:<name>`（pi 亦可用 `pi` 原生方式）。
 
 ---
 
@@ -113,18 +115,21 @@ DAG 依赖由 CLI 强制（`openspec instructions` 会拦截缺依赖的产出�
   schema 并设为默认；含幂等处理与端到端验证。
 - `opsx-use-superpower-cn-schema/`：**简体中文版** OpenSpec schema `superpowers-bridge-cn`，
   由 [superpowers-bridge](https://github.com/JiangWay/openspec-schemas/tree/main/superpowers-bridge) 整理而来，
-  并融合本仓库 `prompts/stdd-*.md` 的 SDD 工作流细节。安装：把该目录复制到项目
+  并融合本仓库 `skills/stdd-*` 的 SDD 工作流细节。安装：把该目录复制到项目
   `openspec/schemas/superpowers-bridge-cn/` 后运行 `openspec schema validate superpowers-bridge-cn`。
   详见该技能内 `README.md`。
+- `stdd-propose/`、`stdd-apply/`、`stdd-archive/`：⚠️ 即将弃用的 SDD prompt 工作流，
+  已从 `prompts/stdd-*.md` 迁移为技能以兼容 omp。用法见文末。
 
 ---
 
-## ⚠️ 即将弃用：stdd prompt 工作流
+## ⚠️ 即将弃用：stdd 技能工作流
 
-`prompts/stdd-*.md`（`/stdd-propose`、`/stdd-plan`、`/stdd-apply`、`/stdd-archive`）
-是早期的 prompt 模板工作流，**即将弃用**，理由：
+`skills/stdd-*`（`/skill:stdd-propose`、`/skill:stdd-apply`、`/skill:stdd-archive`）
+是早期的 prompt 模板工作流（原 `prompts/stdd-*.md`，为兼容 omp 已迁移为技能），
+**即将弃用**，理由：
 
-- 流程约定散落在 prompt 文本里，无法由 CLI 强制 DAG 依赖（可跳步、缺产出物不自检）；
+- 流程约定散落在技能文本里，无法由 CLI 强制 DAG 依赖（可跳步、缺产出物不自检）；
 - 没有 apply 之后的 verify / retrospective 闭环；
 - 实现方式未集成 worktree / subagent / TDD / code-review。
 
@@ -132,7 +137,7 @@ DAG 依赖由 CLI 强制（`openspec instructions` 会拦截缺依赖的产出�
 instructions 融合了 SDD 行为细节：对话纪律、apply 暂停条件、提交纪律等）。
 
 **迁移路径**：新工作一律走 openspec schema 工作流；`opsx-init` 可一键初始化。
-计划在下一个大版本移除 `prompts/stdd-*.md`。
+计划在下一个大版本移除 `skills/stdd-*`。
 
 ---
 

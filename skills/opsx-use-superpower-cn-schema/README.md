@@ -2,7 +2,7 @@
 
 将 [superpowers-bridge](https://github.com/JiangWay/openspec-schemas/tree/main/superpowers-bridge)
 整理的**简体中文** OpenSpec schema，并融合本仓库 SDD（Spec-Driven Development）
-工作流 prompt（`prompts/stdd-*.md`）的行为约束。
+工作流技能（`skills/stdd-*`）的行为约束。
 
 - **目标读者**：想通过 OpenSpec 引入「brainstorm → 提案 → 设计/规格 → 计划 → 实现
   → 验证 → 回顾」全流程、且希望全中文产出物的团队。
@@ -22,7 +22,7 @@
 
 bridge 把两者接起来：**OpenSpec 负责强制 artifact 依赖关系与变更追踪，Superpowers
 负责实现时的方法论**。本中文版在 bridge 基础上，进一步融入了本仓库
-`stdd-propose / stdd-plan / stdd-apply / stdd-archive` 的行为细节（对话纪律、
+`stdd-propose / stdd-apply / stdd-archive` 的行为细节（对话纪律、
 暂停条件、提交纪律、文件头元数据等）。
 
 ## 2. 工作流总览

@@ -246,7 +246,7 @@ apply:
        - 向开发分支 `feat/<change-name>` 提交任务代码
        - 每完成一个 task 后，在 tasks.md 中标记任务完成：`- [ ]` → `- [x]`
        - 如果在 worktree 中开发，同时更新 worktree 和 主工作区中的 task.md
-       - 更新 **tool://todo** 状态
+       - 更新 `todo` 工具状态
        - 继续下一个任务
 
     3. **执行器**：

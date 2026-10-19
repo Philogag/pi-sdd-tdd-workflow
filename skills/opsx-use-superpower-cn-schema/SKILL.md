@@ -11,7 +11,7 @@ description: >-
 
 将 [superpowers-bridge](https://github.com/JiangWay/openspec-schemas/tree/main/superpowers-bridge)
 （Superpowers 技能体系 ↔ OpenSpec 的桥接 schema）整理为**简体中文版**
-`superpowers-bridge-cn`，并融合本仓库 `prompts/stdd-*.md`（SDD：Spec-Driven
+`superpowers-bridge-cn`，并融合本仓库 `skills/stdd-*`（SDD：Spec-Driven
 Development）工作流行为。本 skill 的目录结构：
 
 ```

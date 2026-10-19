@@ -1,12 +1,24 @@
 ---
-description: 收尾提案变更
-argument-hint: "<spec name>"
-compatibility: 需要 openspec CLI 和 superpower 技能包。
+name: stdd-archive
+description: >-
+  收尾提案变更：校验产出物与任务完成度，归档 OpenSpec change 到
+  openspec/changes/archive/YYYY-MM-DD-<name>/，合并开发分支并格式化后提交到主工作区。
+  当用户想归档、收尾、合并某个 change 时使用。需要 openspec CLI 与 git。
 ---
 
-归档实验性工作流中已完成的变更，合并开发分支中的代码并提交到主工作区。
+# stdd-archive — 收尾提案变更
 
-**change-name**：$@（未提供时按步骤 1 推断）
+归档已完成的变更，合并开发分支中的代码并提交到主工作区。
+
+## 何时使用
+
+- 用户想归档/收尾某个 OpenSpec change
+- `/skill:stdd-apply` 已完成全部任务，准备合并并提交
+
+## 输入
+
+`/skill:stdd-archive <change-name>` 的参数（omp 以 `User: <args>` 注入），即
+**change-name**；未提供时按步骤 1 推断。
 
 **步骤**
 
@@ -15,9 +27,9 @@ compatibility: 需要 openspec CLI 和 superpower 技能包。
    如果提供了名称，使用它。否则：
    - 如果用户提到了某个变更，从对话上下文中推断
    - 如果只存在一个活动变更，自动选择
-   - 如果不明确，运行 `openspec list --json` 获取可用变更，并使用 **ask** tool 让用户选择
+   - 如果不明确，运行 `openspec list --json` 获取可用变更，并使用 `ask` 工具让用户选择
 
-   始终宣布："正在使用变更：<change-name>"以及如何覆盖（例如，`/stdd-archive <other>`）。
+   始终宣布："正在使用变更：<change-name>"以及如何覆盖（例如，`/skill:stdd-archive <other>`）。
 
 2. **检查产出物完成状态**
 
